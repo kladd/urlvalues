@@ -1,7 +1,7 @@
 /*
 Package urlvalues fills form values with the contents of a struct.
 
-This package is meant to be used in conjunction with the gorilla toolkit's [schema](https://github.com/gorilla/schema) library, which _decodes_ values into structs.
+This package is meant to be used in conjunction with the gorilla toolkit's schema (https://github.com/gorilla/schema) library, which decodes values into structs.
 
 Example
 
