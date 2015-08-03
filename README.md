@@ -26,6 +26,11 @@ func main() {
 }
 ```
 
+The supported field types so far:
+* int
+* string
+
+
 ### License
 
 MIT Licensed. See [LICENSE](./LICENSE).
