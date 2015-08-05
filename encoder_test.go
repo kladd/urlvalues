@@ -30,39 +30,13 @@ func TestFilled(t *testing.T) {
 	vals := make(map[string][]string)
 	_ = NewEncoder().Encode(s, vals)
 
-	if val, ok := vals["f01"]; ok {
-		if val[0] != "1" {
-			t.Error("expected '1' got ", val[0])
-		}
-	}
-	if val, ok := vals["f02"]; ok {
-		t.Error("Expected 'f02' to be omitted, got ", val[0])
-	}
-	if val, ok := vals["f03"]; ok {
-		if val[0] != "three" {
-			t.Error("expected 'three' got ", val[0])
-		}
-	}
-	if val, ok := vals["f05"]; ok {
-		if val[0] != "1" {
-			t.Error("expected '1' got ", val[0])
-		}
-	}
-	if val, ok := vals["f06"]; ok {
-		if val[0] != "0" {
-			t.Error("expected '0' got ", val[0])
-		}
-	}
-	if val, ok := vals["f07"]; ok {
-		if val[0] != "seven" {
-			t.Error("expected 'seven' got ", val[0])
-		}
-	}
-	if val, ok := vals["f08"]; ok {
-		if val[0] != "8" {
-			t.Error("expected '8' got ", val[0])
-		}
-	}
+	valExists(t, "f01", "1", vals)
+	valNotExists(t, "f02", vals)
+	valExists(t, "f03", "three", vals)
+	valExists(t, "f05", "1", vals)
+	valExists(t, "f06", "0", vals)
+	valExists(t, "f07", "seven", vals)
+	valExists(t, "f08", "8", vals)
 }
 
 func TestEmpty(t *testing.T) {
@@ -75,10 +49,20 @@ func TestEmpty(t *testing.T) {
 	vals := make(map[string][]string)
 	_ = NewEncoder().Encode(s, vals)
 
-	if _, ok := vals["f03"]; !ok {
-		t.Error("omitempty expected not empty, got empty")
+	valExists(t, "f03", "three", vals)
+	valNotExists(t, "f04", vals)
+}
+
+func valExists(t *testing.T, key string, expect string, result map[string][]string) {
+	if val, ok := result[key]; !ok {
+		t.Error("Key not found. Expected: " + expect)
+	} else if val[0] != expect {
+		t.Error("Unexpected value. Expected: " + expect + "; got: " + val[0] + ".")
 	}
-	if val, ok := vals["f04"]; ok {
-		t.Error("omitempty expected empty, got ", val)
+}
+
+func valNotExists(t *testing.T, key string, result map[string][]string) {
+	if val, ok := result[key]; ok {
+		t.Error("Key not ommited. Expected: empty; got: " + val[0] + ".")
 	}
 }
