@@ -6,8 +6,9 @@ type S1 struct {
 	F01 int    `url:"f01"`
 	F02 int    `url:"-"`
 	F03 string `url:"f03"`
-	F04 string `url:"-"`
-	F05 string `url:"f05,omitempty"`
+	F04 string `url:"f04,omitempty"`
+	F05 bool   `url:"f05"`
+	F06 bool   `url:"f06"`
 }
 
 func TestFilled(t *testing.T) {
@@ -16,7 +17,8 @@ func TestFilled(t *testing.T) {
 		F02: 2,
 		F03: "three",
 		F04: "four",
-		F05: "five",
+		F05: true,
+		F06: false,
 	}
 
 	vals := make(map[string][]string)
@@ -32,15 +34,17 @@ func TestFilled(t *testing.T) {
 	}
 	if val, ok := vals["f03"]; ok {
 		if val[0] != "three" {
-			t.Error("expected 'four' got ", val[0])
+			t.Error("expected 'three' got ", val[0])
 		}
 	}
-	if val, ok := vals["f04"]; ok {
-		t.Error("Expected 'four' to be omitted, got ", val[0])
-	}
 	if val, ok := vals["f05"]; ok {
-		if val[0] != "five" {
-			t.Error("expected 'five' got ", val[0])
+		if val[0] != "1" {
+			t.Error("expected '1' got ", val[0])
+		}
+	}
+	if val, ok := vals["f06"]; ok {
+		if val[0] != "0" {
+			t.Error("expected '0' got ", val[0])
 		}
 	}
 }
@@ -49,7 +53,7 @@ func TestEmpty(t *testing.T) {
 	s := &S1{
 		F01: 1,
 		F02: 2,
-		F04: "four",
+		F03: "three",
 	}
 
 	vals := make(map[string][]string)
@@ -58,7 +62,7 @@ func TestEmpty(t *testing.T) {
 	if _, ok := vals["f03"]; !ok {
 		t.Error("omitempty expected not empty, got empty")
 	}
-	if val, ok := vals["f05"]; ok {
+	if val, ok := vals["f04"]; ok {
 		t.Error("omitempty expected empty, got ", val)
 	}
 }

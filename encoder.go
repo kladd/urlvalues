@@ -37,7 +37,6 @@ func (e *Encoder) Encode(src interface{}, dst map[string][]string) error {
 			name = tag[:idx]
 			opts = tag[idx+1:]
 		}
-
 		if name == "-" {
 			continue
 		}
@@ -59,6 +58,8 @@ func encoder(t reflect.Type) func(v reflect.Value) string {
 		return stringEncoder
 	case reflect.Int:
 		return intEncoder
+	case reflect.Bool:
+		return boolEncoder
 	default:
 		return unsupportedEncoder
 	}
@@ -70,6 +71,13 @@ func stringEncoder(v reflect.Value) string {
 
 func intEncoder(v reflect.Value) string {
 	return strconv.Itoa(int(v.Int()))
+}
+
+func boolEncoder(v reflect.Value) string {
+	if v.Bool() {
+		return "1"
+	}
+	return "0"
 }
 
 func unsupportedEncoder(v reflect.Value) string {
