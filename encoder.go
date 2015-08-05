@@ -42,13 +42,7 @@ func (e *Encoder) Encode(src interface{}, dst map[string][]string) error {
 			continue
 		}
 
-		switch v.Field(i).Type().Kind() {
-		case reflect.String:
-			value = v.Field(i).String()
-		case reflect.Int:
-			value = strconv.Itoa(int(v.Field(i).Int()))
-		}
-
+		value = encoder(v.Field(i).Type())(v.Field(i))
 		if value == "" && strings.Contains(opts, "omitempty") {
 			continue
 		}
@@ -57,4 +51,27 @@ func (e *Encoder) Encode(src interface{}, dst map[string][]string) error {
 	}
 
 	return nil
+}
+
+func encoder(t reflect.Type) func(v reflect.Value) string {
+	switch t.Kind() {
+	case reflect.String:
+		return stringEncoder
+	case reflect.Int:
+		return intEncoder
+	default:
+		return unsupportedEncoder
+	}
+}
+
+func stringEncoder(v reflect.Value) string {
+	return v.String()
+}
+
+func intEncoder(v reflect.Value) string {
+	return strconv.Itoa(int(v.Int()))
+}
+
+func unsupportedEncoder(v reflect.Value) string {
+	return ""
 }
