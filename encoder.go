@@ -56,7 +56,7 @@ func encoder(t reflect.Type) func(v reflect.Value) string {
 	switch t.Kind() {
 	case reflect.String:
 		return stringEncoder
-	case reflect.Int:
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		return intEncoder
 	case reflect.Float32:
 		return float32Encoder
