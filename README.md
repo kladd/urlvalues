@@ -1,6 +1,6 @@
 # urlvalues - Golang query strings
 
-[![GoDoc](https://godoc.org/github.com/kladd/urlvalues?status.svg)](https://godoc.org/github.com/kladd/urlvalues)
+[![GoDoc](https://godoc.org/github.com/kladd/urlvalues?status.svg)](https://godoc.org/github.com/kladd/urlvalues) [![Build Status](https://travis-ci.org/kladd/urlvalues.png?branch=master)](https://travis-ci.org/kladd/urlvalues)
 
 Package urlvalues fills form values with the contents of a struct.
 
