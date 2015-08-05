@@ -60,6 +60,8 @@ func encoder(t reflect.Type) func(v reflect.Value) string {
 		return intEncoder
 	case reflect.Bool:
 		return boolEncoder
+	case reflect.Ptr:
+		return ptrEncoder(t)
 	default:
 		return unsupportedEncoder
 	}
@@ -78,6 +80,16 @@ func boolEncoder(v reflect.Value) string {
 		return "1"
 	}
 	return "0"
+}
+
+func ptrEncoder(t reflect.Type) func(v reflect.Value) string {
+	f := encoder(t.Elem())
+	return func(v reflect.Value) string {
+		if v.IsNil() {
+			return "null"
+		}
+		return f(v.Elem())
+	}
 }
 
 func unsupportedEncoder(v reflect.Value) string {
