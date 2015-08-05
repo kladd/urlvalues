@@ -58,6 +58,10 @@ func encoder(t reflect.Type) func(v reflect.Value) string {
 		return stringEncoder
 	case reflect.Int:
 		return intEncoder
+	case reflect.Float32:
+		return float32Encoder
+	case reflect.Float64:
+		return float64Encoder
 	case reflect.Bool:
 		return boolEncoder
 	case reflect.Ptr:
@@ -73,6 +77,14 @@ func stringEncoder(v reflect.Value) string {
 
 func intEncoder(v reflect.Value) string {
 	return strconv.Itoa(int(v.Int()))
+}
+
+func float32Encoder(v reflect.Value) string {
+	return strconv.FormatFloat(v.Float(), 'f', 6, 32)
+}
+
+func float64Encoder(v reflect.Value) string {
+	return strconv.FormatFloat(v.Float(), 'f', 6, 64)
 }
 
 func boolEncoder(v reflect.Value) string {
