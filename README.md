@@ -29,8 +29,10 @@ func main() {
 ```
 
 The supported field types so far:
-* int
-* string
+* bool(&)
+* int(8/16/32/64/&)
+* float(32/64/&)
+* string(&)
 
 
 ### License

@@ -54,25 +54,28 @@ func (e *Encoder) Encode(src interface{}, dst map[string][]string) error {
 
 func encoder(t reflect.Type) func(v reflect.Value) string {
 	switch t.Kind() {
-	case reflect.String:
-		return stringEncoder
+	case reflect.Bool:
+		return boolEncoder
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		return intEncoder
 	case reflect.Float32:
 		return float32Encoder
 	case reflect.Float64:
 		return float64Encoder
-	case reflect.Bool:
-		return boolEncoder
 	case reflect.Ptr:
 		return ptrEncoder(t)
+	case reflect.String:
+		return stringEncoder
 	default:
 		return unsupportedEncoder
 	}
 }
 
-func stringEncoder(v reflect.Value) string {
-	return v.String()
+func boolEncoder(v reflect.Value) string {
+	if v.Bool() {
+		return "1"
+	}
+	return "0"
 }
 
 func intEncoder(v reflect.Value) string {
@@ -87,13 +90,6 @@ func float64Encoder(v reflect.Value) string {
 	return strconv.FormatFloat(v.Float(), 'f', 6, 64)
 }
 
-func boolEncoder(v reflect.Value) string {
-	if v.Bool() {
-		return "1"
-	}
-	return "0"
-}
-
 func ptrEncoder(t reflect.Type) func(v reflect.Value) string {
 	f := encoder(t.Elem())
 	return func(v reflect.Value) string {
@@ -102,6 +98,10 @@ func ptrEncoder(t reflect.Type) func(v reflect.Value) string {
 		}
 		return f(v.Elem())
 	}
+}
+
+func stringEncoder(v reflect.Value) string {
+	return v.String()
 }
 
 func unsupportedEncoder(v reflect.Value) string {
