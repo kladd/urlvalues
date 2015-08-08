@@ -23,7 +23,7 @@ func NewEncoder() *Encoder {
 func (e *Encoder) Encode(src interface{}, dst map[string][]string) error {
 	v := reflect.ValueOf(src)
 	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {
-		return errors.New("urlutil: interface must be a pointer to a struct")
+		return errors.New("urlvalues: interface must be a pointer to a struct")
 	}
 	v = v.Elem()
 	t := v.Type()
