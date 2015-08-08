@@ -1,4 +1,4 @@
-# urlvalues - Golang query strings
+# urlvalues - Golang structs to form values
 
 [![GoDoc](https://godoc.org/github.com/kladd/urlvalues?status.svg)](https://godoc.org/github.com/kladd/urlvalues) [![Build Status](https://travis-ci.org/kladd/urlvalues.png?branch=master)](https://travis-ci.org/kladd/urlvalues)
 
