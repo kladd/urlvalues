@@ -1,7 +1,6 @@
 package urlvalues
 
 import (
-	"errors"
 	"reflect"
 	"strconv"
 	"strings"
@@ -22,10 +21,9 @@ func NewEncoder() *Encoder {
 // Intended for use with url.Values.
 func (e *Encoder) Encode(src interface{}, dst map[string][]string) error {
 	v := reflect.ValueOf(src)
-	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct {
-		return errors.New("urlvalues: interface must be a pointer to a struct")
+	if v.Kind() == reflect.Ptr && v.Elem().Kind() == reflect.Struct {
+		v = v.Elem()
 	}
-	v = v.Elem()
 	t := v.Type()
 
 	var opts string
