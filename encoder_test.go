@@ -12,11 +12,17 @@ type S1 struct {
 	F07 *string `url:"f07"`
 	F08 *int8   `url:"f08"`
 	F09 float64 `url:"f09"`
+	F10 S2
+}
+
+type S2 struct {
+	F01 int `url:"f201"`
 }
 
 func TestFilled(t *testing.T) {
 	f07 := "seven"
 	var f08 int8 = 8
+	s2 := S2{10}
 	s := &S1{
 		F01: 1,
 		F02: 2,
@@ -27,6 +33,7 @@ func TestFilled(t *testing.T) {
 		F07: &f07,
 		F08: &f08,
 		F09: 1.618,
+		F10: s2,
 	}
 
 	vals := make(map[string][]string)
@@ -40,6 +47,7 @@ func TestFilled(t *testing.T) {
 	valExists(t, "f07", "seven", vals)
 	valExists(t, "f08", "8", vals)
 	valExists(t, "f09", "1.618000", vals)
+	valExists(t, "f201", "10", vals)
 }
 
 func TestEmpty(t *testing.T) {

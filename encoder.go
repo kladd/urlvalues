@@ -24,10 +24,15 @@ func (e *Encoder) Encode(src interface{}, dst map[string][]string) error {
 	if v.Kind() == reflect.Ptr && v.Elem().Kind() == reflect.Struct {
 		v = v.Elem()
 	}
-	t := v.Type()
 
+	return e.encode(v, dst)
+}
+
+func (e *Encoder) encode(v reflect.Value, dst map[string][]string) error {
 	var opts string
 	var value string
+	t := v.Type()
+
 	for i := 0; i < v.NumField(); i++ {
 		tag := t.Field(i).Tag.Get(e.TagID)
 		name := tag
@@ -39,7 +44,14 @@ func (e *Encoder) Encode(src interface{}, dst map[string][]string) error {
 			continue
 		}
 
-		value = encoder(v.Field(i).Type())(v.Field(i))
+		encFunc, recurse := encoder(v.Field(i).Type())
+		if recurse {
+			e.encode(v.Field(i), dst)
+			continue
+		}
+
+		value = encFunc(v.Field(i))
+
 		if value == "" && strings.Contains(opts, "omitempty") {
 			continue
 		}
@@ -50,22 +62,25 @@ func (e *Encoder) Encode(src interface{}, dst map[string][]string) error {
 	return nil
 }
 
-func encoder(t reflect.Type) func(v reflect.Value) string {
+func encoder(t reflect.Type) (func(v reflect.Value) string, bool) {
 	switch t.Kind() {
 	case reflect.Bool:
-		return boolEncoder
+		return boolEncoder, false
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return intEncoder
+		return intEncoder, false
 	case reflect.Float32:
-		return float32Encoder
+		return float32Encoder, false
 	case reflect.Float64:
-		return float64Encoder
+		return float64Encoder, false
 	case reflect.Ptr:
-		return ptrEncoder(t)
+		f, recurse := ptrEncoder(t)
+		return f, recurse
 	case reflect.String:
-		return stringEncoder
+		return stringEncoder, false
+	case reflect.Struct:
+		return unsupportedEncoder, true
 	default:
-		return unsupportedEncoder
+		return unsupportedEncoder, false
 	}
 }
 
@@ -88,14 +103,15 @@ func float64Encoder(v reflect.Value) string {
 	return strconv.FormatFloat(v.Float(), 'f', 6, 64)
 }
 
-func ptrEncoder(t reflect.Type) func(v reflect.Value) string {
-	f := encoder(t.Elem())
+func ptrEncoder(t reflect.Type) (func(v reflect.Value) string, bool) {
+	f, recurse := encoder(t.Elem())
+
 	return func(v reflect.Value) string {
 		if v.IsNil() {
 			return "null"
 		}
 		return f(v.Elem())
-	}
+	}, recurse
 }
 
 func stringEncoder(v reflect.Value) string {
