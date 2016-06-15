@@ -16,6 +16,13 @@ func NewEncoder() *Encoder {
 	return &Encoder{TagID: "url"}
 }
 
+// SetAliasTag changes the tag used to locate urlvalues annotations. The default
+// value is "url"
+func (e *Encoder) SetAliasTag(tag string) *Encoder {
+	e.TagID = tag
+	return e
+}
+
 // Encode encodes a struct into map[string][]string.
 //
 // Intended for use with url.Values.
